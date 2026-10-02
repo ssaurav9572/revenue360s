@@ -1,0 +1,69 @@
+:root {
+  --bg: #0b0d10;
+  --panel: #12161c;
+  --line: #232a33;
+  --text: #efe8dc;
+  --muted: #9a9286;
+  --gold: #c4a574;
+  --gold-2: #e4c98a;
+  --good: #8ee0ad;
+  --bad: #e08e8e;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font-family: "Instrument Sans", "Segoe UI", sans-serif; }
+a { color: var(--gold); }
+button, input, select, textarea { font: inherit; }
+.app { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: 100vh; }
+.side { background: #101318; border-right: 1px solid var(--line); padding: 22px 16px; }
+.brand { font-weight: 700; letter-spacing: -.03em; font-size: 22px; }
+.brand span { color: var(--gold); }
+.nav { margin-top: 18px; display: grid; gap: 4px; }
+.nav-label { margin: 14px 12px 2px; color: var(--muted); font-size: 10px; font-weight: 700; text-transform: uppercase; }
+.nav button { background: transparent; border: 0; color: var(--muted); text-align: left; padding: 8px 12px; border-radius: 10px; cursor: pointer; }
+.nav button.active, .nav button:hover { background: #1a2028; color: var(--text); }
+.badge { display: inline-block; margin-top: 12px; padding: 4px 10px; border-radius: 999px; font-size: 12px; border: 1px solid #6a5424; color: var(--gold-2); }
+.badge.live { border-color: #1f5a36; color: var(--good); background: #14301f; }
+.main { min-width: 0; padding: 28px 36px 60px; }
+h1, h2, h3 { letter-spacing: -.03em; margin: 0 0 8px; }
+.sub { color: var(--muted); margin-bottom: 22px; }
+.metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-bottom: 14px; }
+.card b { display: block; font-size: 26px; }
+label { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 6px; }
+input, select, textarea { width: 100%; background: #0e1217; color: var(--text); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+textarea { min-height: 90px; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.btn { background: var(--gold); color: #111; border: 0; border-radius: 10px; padding: 10px 14px; font-weight: 650; cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--line); }
+.checks { display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 0 16px; }
+.checks label { color: var(--text); display: flex; gap: 8px; align-items: center; margin: 0; }
+.step { border: 1px dashed #3a3124; border-radius: 14px; padding: 14px; margin-bottom: 12px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); color: var(--muted); }
+.import-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 14px 0 10px; }
+.import-toolbar .sub { margin: 0 auto 0 0; }
+.import-grid-scroll { max-width: 100%; overflow: auto; border: 1px solid var(--line); }
+.import-grid { min-width: 720px; }
+.import-grid th, .import-grid td { min-width: 180px; padding: 6px; }
+.import-grid th:last-child, .import-grid td:last-child { min-width: 92px; width: 92px; }
+.import-grid input { min-width: 160px; padding: 8px; border-radius: 6px; }
+.import-status { margin-top: 10px; color: var(--muted); font-size: 13px; }
+.account-list { display: grid; gap: 8px; }
+.account-row { display: grid; grid-template-columns: minmax(100px, 1fr) minmax(120px, 1.5fr) auto auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.account-row:last-child { border-bottom: 0; }
+.account-status { color: var(--good); font-size: 12px; text-transform: capitalize; }
+.account-status.sandbox, .account-status.pending { color: var(--muted); }
+.thread { max-width: 720px; display: grid; gap: 10px; }
+.bubble { padding: 10px 12px; border-radius: 12px; background: #1a2028; }
+.bubble.in { background: #1c1812; }
+.auth { max-width: 420px; margin: 10vh auto; }
+.toast { position: fixed; right: 18px; bottom: 18px; background: #1c1812; border: 1px solid var(--gold); padding: 10px 14px; border-radius: 10px; display: none; z-index: 20; }
+.hide { display: none; }
+code { color: var(--gold-2); }
+@media (max-width: 900px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .side, .main { min-width: 0; }
+  .metrics, .row, .row3 { grid-template-columns: 1fr; }
+  .account-row { grid-template-columns: 1fr 1fr; }
+}

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Revenue360s</title>
+  <link rel="stylesheet" href="/static/css/main.css?v=20260928-platform-v3" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="auth" class="auth card">
+    <div class="brand">Revenue<span>360s</span></div>
+    <p class="sub">Follow up every lead on WhatsApp, email, and SMS from one workspace.</p>
+    <div class="row">
+      <button class="btn" id="tab-login">Log in</button>
+      <button class="btn ghost" id="tab-signup">Create account</button>
+      <button class="btn ghost" id="tab-reset">Forgot</button>
+    </div>
+    <form id="login-form">
+      <label>Email</label><input name="email" type="email" required />
+      <label>Password</label><input name="password" type="password" required />
+      <p><button class="btn" type="submit">Enter workspace</button></p>
+    </form>
+    <form id="signup-form" class="hide">
+      <label>Full name</label><input name="full_name" required />
+      <label>Email</label><input name="email" type="email" required />
+      <label>Password</label><input name="password" type="password" minlength="8" required />
+      <p><button class="btn" type="submit">Create account</button></p>
+    </form>
+    <form id="reset-form" class="hide">
+      <label>Account email</label><input name="email" type="email" />
+      <p><button class="btn" type="button" id="send-reset">Send reset code</button></p>
+      <label>Reset code</label><input name="code" />
+      <label>New password</label><input name="password" type="password" minlength="8" />
+      <p><button class="btn" type="submit">Update password</button></p>
+    </form>
+    <p class="sub" id="auth-msg"></p>
+  </div>
+
+  <div id="app" class="app hide">
+    <aside class="side">
+      <div class="brand">Revenue<span>360s</span></div>
+      <div class="badge" id="mode-badge">Sandbox</div>
+      <div class="nav">
+        <span class="nav-label">Overview</span>
+        <button data-page="overview" class="active">Today</button>
+        <span class="nav-label">CRM</span>
+        <button data-page="inbox">Inbox</button>
+        <button data-page="leads">Leads</button>
+        <span class="nav-label">Engage</span>
+        <button data-page="campaigns">Campaigns</button>
+        <button data-page="sequences">Sequences</button>
+        <button data-page="templates">Templates</button>
+        <button data-page="workflows">Workflows</button>
+        <span class="nav-label">Publish</span>
+        <button data-page="social_media">Social</button>
+        <span class="nav-label">Channels</span>
+        <button data-page="accounts">Accounts</button>
+        <button data-page="email">Email</button>
+        <button data-page="sms">SMS</button>
+        <button data-page="whatsapp">WhatsApp</button>
+        <span class="nav-label">Growth</span>
+        <button data-page="ads">Ads</button>
+        <span class="nav-label">Settings</span>
+        <button data-page="company">Company</button>
+        <button data-page="settings">Preferences</button>
+      </div>
+      <div class="badge" id="who"></div>
+      <p><button class="btn ghost" id="logout">Log out</button></p>
+    </aside>
+    <main class="main" id="page"></main>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script src="/static/js/communication_channel.js?v=20260928-platform-v3"></script>
+  <script src="/static/js/engine.js?v=20260928-platform-v4"></script>
+  <script src="/static/js/leads.js?v=20260928-import-grid"></script>
+  <script src="/static/js/social_media.js?v=20260928-platform-v3"></script>
+  <script src="/static/js/settings.js"></script>
+  <script src="/static/js/main.js?v=20260928-platform-v3"></script>
+</body>
+</html>
