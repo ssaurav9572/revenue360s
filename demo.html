@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revenue360s — Platform Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f6f1ea;
+  --surface: #fdfaf7;
+  --surface-2: #f3ebe3;
+  --text: #2a241e;
+  --muted: #7d7369;
+  --accent: #c46b3a;
+  --accent-soft: #d9b48a;
+  --border: #e8e0d6;
+  --success: #5d7a5b;
+  --card: #fffefc;
+}
+[data-theme="dark"] {
+  --bg: #1e1a16;
+  --surface: #28231f;
+  --surface-2: #322c27;
+  --text: #f3eee8;
+  --muted: #a89e94;
+  --accent: #d9b48a;
+  --accent-soft: #c9a87a;
+  --border: #3d362f;
+  --success: #8fb08a;
+  --card: #2c2723;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.3s, color 0.3s;
+}
+.app { display: flex; min-height: 100vh; }
+.sidebar {
+  width: 220px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 24px 16px;
+  flex-shrink: 0;
+}
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  margin-bottom: 32px;
+  padding-left: 8px;
+}
+.nav-item {
+  padding: 11px 12px;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  font-size: 0.92rem;
+  color: var(--muted);
+  transition: all 0.2s;
+}
+.nav-item:hover, .nav-item.active {
+  background: var(--surface-2);
+  color: var(--text);
+}
+.nav-item.active { font-weight: 500; }
+.main { flex: 1; padding: 32px 40px; overflow-y: auto; }
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+.theme-toggle {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+.view { display: none; }
+.view.active { display: block; animation: fade 0.4s ease; }
+@keyframes fade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.9rem;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.sub { color: var(--muted); margin-bottom: 28px; font-size: 0.95rem; }
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.btn {
+  background: var(--accent);
+  color: #fffaf6;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.2s;
+}
+.btn:hover { opacity: 0.92; }
+.btn:active { transform: scale(0.98); }
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.process-steps { display: flex; flex-direction: column; gap: 14px; margin: 20px 0; }
+.step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--surface-2);
+  border-radius: 10px;
+  opacity: 0.4;
+  transition: all 0.4s;
+}
+.step.active { opacity: 1; border-left: 3px solid var(--accent); }
+.step.done { opacity: 1; }
+.step .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.step.active .dot, .step.done .dot { background: var(--accent); }
+.leads-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+.lead-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+}
+.lead-header { display: flex; gap: 12px; margin-bottom: 12px; align-items: center; }
+.avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+.lead-name { font-weight: 500; }
+.lead-role { font-size: 0.82rem; color: var(--muted); }
+.tag {
+  display: inline-block;
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 0.75rem;
+  padding: 3px 8px;
+  border-radius: 6px;
+  margin-right: 6px;
+  margin-bottom: 6px;
+}
+.script-box {
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 0.85rem;
+  margin-top: 10px;
+  color: var(--text);
+  line-height: 1.5;
+}
+.metrics { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+.metric {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  min-width: 140px;
+}
+.metric .num { font-size: 1.5rem; font-weight: 500; }
+.metric .lbl { font-size: 0.8rem; color: var(--muted); }
+.creative { display: flex; gap: 20px; align-items: flex-start; }
+.creative img { width: 160px; border-radius: 10px; border: 1px solid var(--border); }
+.ad-meta { font-size: 0.88rem; }
+.ad-meta div { margin-bottom: 6px; }
+.wa-chat {
+  background: #e8f5e9;
+  color: #1b3a1f;
+  border-radius: 12px;
+  padding: 14px;
+  max-width: 320px;
+  margin-top: 12px;
+  font-size: 0.88rem;
+}
+[data-theme="dark"] .wa-chat { background: #2a3a2c; color: #d4e8d4; }
+.progress-bar {
+  height: 6px;
+  background: var(--surface-2);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 16px 0;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  width: 0%;
+  transition: width 0.6s ease;
+}
+.table-wrap { overflow-x: auto; margin-top: 12px; }
+table.data { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+table.data th, table.data td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+table.data th {
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.export-btns { display: flex; gap: 10px; margin-bottom: 16px; }
+.workflow-step {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  position: relative;
+}
+.workflow-step::before {
+  content: "";
+  position: absolute;
+  left: 28px;
+  top: 100%;
+  width: 2px;
+  height: 14px;
+  background: var(--border);
+}
+.workflow-step:last-child::before { display: none; }
+.chat-config {
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 10px;
+  font-size: 0.85rem;
+}
+@media (max-width: 800px) {
+  .sidebar { display: none; }
+  .main { padding: 20px 16px; }
+  .creative { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">Revenue360s</div>
+    <div class="nav-item active" data-view="setup">Setup</div>
+    <div class="nav-item" data-view="discover">Lead Discovery</div>
+    <div class="nav-item" data-view="leads">Lead Profiles</div>
+    <div class="nav-item" data-view="outreach">Outreach</div>
+    <div class="nav-item" data-view="pipeline">Pipeline</div>
+    <div class="nav-item" data-view="meta">Meta Ads</div>
+    <div class="nav-item" data-view="xads">X Ads</div>
+    <div class="nav-item" data-view="google">Google & YouTube</div>
+    <div class="nav-item" data-view="checker">Creative Checker</div>
+    <div class="nav-item" data-view="crm">CRM</div>
+    <div class="nav-item" data-view="workflows">Workflows</div>
+    <div class="nav-item" data-view="insights">Insights</div>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <div style="font-size:0.9rem;color:var(--muted)">Demo · Dummy Data</div>
+      <button class="theme-toggle" onclick="toggleTheme()">Toggle Light / Dark</button>
+    </div>
+
+    <section class="view active" id="setup">
+      <h1>Company Setup</h1>
+      <p class="sub">Confirm your company details to begin lead discovery.</p>
+      <div class="card">
+        <div style="margin-bottom:16px"><strong>Company</strong><br>Aarohan Digital Solutions</div>
+        <div style="margin-bottom:16px"><strong>Industry</strong><br>B2B SaaS / Marketing Automation</div>
+        <div style="margin-bottom:16px"><strong>Target ICP</strong><br>Founders & Sales Heads at 10–100 employee companies in India</div>
+        <div style="margin-bottom:20px"><strong>Offer</strong><br>AI-powered lead gen + WhatsApp sales agents</div>
+        <button class="btn" onclick="startDiscovery()">Looks Good — Start Discovery</button>
+      </div>
+    </section>
+
+    <section class="view" id="discover">
+      <h1>Lead Discovery</h1>
+      <p class="sub">Pulling qualified leads from multiple sources. This takes about 10 seconds in the live system.</p>
+      <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
+      <div class="process-steps" id="steps">
+        <div class="step"><div class="dot"></div><div>Understanding your business & building ICP</div></div>
+        <div class="step"><div class="dot"></div><div>Scanning Apollo for matching ICPs</div></div>
+        <div class="step"><div class="dot"></div><div>Checking LinkedIn company pages & decision makers for matching ICPs</div></div>
+        <div class="step"><div class="dot"></div><div>Pulling Reddit mentions & intent signals — checking if product matches real conversations</div></div>
+        <div class="step"><div class="dot"></div><div>Syncing with your existing CRM contacts</div></div>
+        <div class="step"><div class="dot"></div><div>Enriching via Google Maps business listings</div></div>
+        <div class="step"><div class="dot"></div><div>Scoring & ranking leads by fit</div></div>
+        <div class="step"><div class="dot"></div><div>Validating email and phone numbers for originality</div></div>
+      </div>
+      <button class="btn" id="toLeads" style="display:none;margin-top:20px" onclick="showView('leads')">View 50 Highly Qualified Leads</button>
+    </section>
+
+    <section class="view" id="leads">
+      <h1>Qualified Leads</h1>
+      <p class="sub">50 highly qualified profiles ready. Showing a sample of 10 with full context, social signals, and strong first-touch emails. The rest are scored and queued in the CRM.</p>
+      <div class="leads-grid" id="leadsGrid"></div>
+    </section>
+
+    <section class="view" id="outreach">
+      <h1>Outreach Sequences</h1>
+      <p class="sub">Bulk personalized emails via Resend. Every message is unique. Voice notes included. Opens and replies tracked in CRM.</p>
+      <div class="metrics">
+        <div class="metric"><div class="num">48</div><div class="lbl">Emails Queued</div></div>
+        <div class="metric"><div class="num">31</div><div class="lbl">Opened</div></div>
+        <div class="metric"><div class="num">12</div><div class="lbl">Voice Notes</div></div>
+        <div class="metric"><div class="num">7</div><div class="lbl">Replied</div></div>
+      </div>
+      <div class="card">
+        <strong>Sample Sequence — Rakul Mehta</strong>
+        <div style="margin-top:12px;font-size:0.9rem">
+          <div><strong>Subject:</strong> Quick thought on your sales process at TechNova</div>
+          <div class="script-box" style="margin-top:8px">Hi Rakul, noticed TechNova is scaling the sales team. We help companies like yours run personalized WhatsApp + email sequences without adding headcount. Worth a 12-min look?</div>
+          <div style="margin-top:10px;font-size:0.85rem;color:var(--muted)">Opened · Replied · Voice note attached · 18s · Editable</div>
+        </div>
+      </div>
+      <div class="card">
+        <strong>Another variant — Priyansh Sharma</strong>
+        <div style="margin-top:8px;font-size:0.9rem">
+          <div><strong>Subject:</strong> Saw your post about lead quality</div>
+          <div class="script-box">Priyansh — your recent comment on LinkedIn about lead quality resonated. We built a system that scores leads before they hit your team. Happy to share how it works for similar teams.</div>
+          <div style="margin-top:10px;font-size:0.85rem;color:var(--muted)">Opened · Not yet replied</div>
+        </div>
+      </div>
+      <button class="btn-secondary" style="margin-top:8px">Edit Sequence</button>
+    </section>
+
+    <section class="view" id="pipeline">
+      <h1>Pipeline</h1>
+      <p class="sub">Replies tracked. Meetings booked. Everything linked to the same CRM.</p>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+          <div><strong>Rahul Mehta</strong> · TechNova</div>
+          <div style="color:var(--success);font-weight:500">Meeting Booked</div>
+        </div>
+        <div style="font-size:0.9rem;color:var(--muted)">Replied to email · Requested demo · Calendar link sent · Confirmed for Thursday 3:30 PM</div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between">
+          <div><strong>Ananya Reddy</strong> · GrowFast</div>
+          <div style="color:var(--accent)">Replied</div>
+        </div>
+        <div style="font-size:0.9rem;color:var(--muted);margin-top:6px">Asked for pricing details. Follow-up scheduled.</div>
+      </div>
+    </section>
+
+    <section class="view" id="meta">
+      <h1>Meta Ads</h1>
+      <p class="sub">15-second reel + static creatives. Campaign optimized for MOFU. Leads flowing into WhatsApp with Meta CAPI.</p>
+      <div class="metrics">
+        <div class="metric"><div class="num">₹18,400</div><div class="lbl">Spend (7d)</div></div>
+        <div class="metric"><div class="num">312</div><div class="lbl">Leads</div></div>
+        <div class="metric"><div class="num">₹59</div><div class="lbl">CPL</div></div>
+        <div class="metric"><div class="num">₹186</div><div class="lbl">CPM</div></div>
+        <div class="metric"><div class="num">2.8%</div><div class="lbl">CTR</div></div>
+        <div class="metric"><div class="num">4.2×</div><div class="lbl">ROAS</div></div>
+        <div class="metric"><div class="num">3.1×</div><div class="lbl">ROI</div></div>
+      </div>
+      <div class="card">
+        <strong>Landing page analytics</strong>
+        <div style="margin-top:8px;font-size:0.9rem;color:var(--muted)">Sessions 1,240 · Bounce 41% · Avg time 1m 48s · Form starts 198 · WhatsApp clicks 312</div>
+      </div>
+      <div class="card">
+        <strong>Creative Checklist</strong>
+        <table style="width:100%;margin-top:12px;font-size:0.88rem;border-collapse:collapse">
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 0">Hook</td><td>Strong — “Aapka business, apni pehchaan”</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 0">Context</td><td>Clear pain → solution in first 4 seconds</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 0">CTA</td><td>WhatsApp Message (defined & tested)</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 0">Description</td><td>Present · Mentions outcome + offer</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 0">Shareability</td><td>High — short, relatable, save-worthy</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 0">Comments</td><td>Engagement prompt included</td></tr>
+          <tr><td style="padding:8px 0">Auto DM</td><td>Enabled · Instant reply on WhatsApp</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <div class="creative">
+          <img src="static/reel-thumb.webp" alt="Reel">
+          <div class="ad-meta">
+            <div><strong>15-sec Reel</strong> · MOFU · Brand + Product</div>
+            <div>CTA: WhatsApp Message</div>
+            <div>Placements: Feed, Reels, Stories</div>
+            <div>Captions: “Aapka business, apni pehchaan.”</div>
+            <div style="margin-top:8px;color:var(--success)">Running · Optimized continuously via CAPI</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="creative">
+          <img src="static/static-ad.webp" alt="Static">
+          <div class="ad-meta">
+            <div><strong>Static Image</strong> · Lead Gen</div>
+            <div>CTA: Send Message on WhatsApp</div>
+            <div>Audience: Founders, Sales Managers, India</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <strong>WhatsApp Lead Flow (Meta CAPI)</strong>
+        <div class="wa-chat" style="margin-top:12px">
+          <div><strong>Lead 1 — Approved</strong></div>
+          <div>Hi, saw your ad. Need help with lead quality.</div>
+          <div style="margin-top:6px;font-size:0.8rem;color:#2e7d32">✓ Qualified · Sent to CRM</div>
+        </div>
+        <div class="wa-chat" style="margin-top:10px;background:#fff3e0;color:#5d4037">
+          <div><strong>Lead 2 — Rejected</strong></div>
+          <div>Just looking around.</div>
+          <div style="margin-top:6px;font-size:0.8rem">Filtered · Not ICP</div>
+        </div>
+      </div>
+      <button class="btn-secondary" style="margin-top:8px" onclick="showView('checker'); document.getElementById('platform').value='Meta'">Check a Meta creative</button>
+    </section>
+
+    <section class="view" id="xads">
+      <h1>X Ads</h1>
+      <p class="sub">Promoted posts and conversation ads on X, linked to the same CRM and conversion events.</p>
+      <div class="metrics">
+        <div class="metric"><div class="num">$420</div><div class="lbl">Spend (7d)</div></div>
+        <div class="metric"><div class="num">86</div><div class="lbl">Leads</div></div>
+        <div class="metric"><div class="num">$4.9</div><div class="lbl">CPL</div></div>
+        <div class="metric"><div class="num">$7.2</div><div class="lbl">CPM</div></div>
+        <div class="metric"><div class="num">1.9%</div><div class="lbl">CTR</div></div>
+        <div class="metric"><div class="num">3.4×</div><div class="lbl">ROAS</div></div>
+      </div>
+      <div class="card">
+        <strong>Promoted Post</strong>
+        <div style="margin-top:10px;font-size:0.9rem;line-height:1.6">
+          “Most sales teams waste 40% of their time on unqualified leads. We score and route only real conversations to WhatsApp + email.”<br><br>
+          CTA: Message on WhatsApp · Targeting: Founders & Sales leaders in India<br>
+          Status: Active · Optimized continuously
+        </div>
+      </div>
+      <button class="btn-secondary" style="margin-top:8px" onclick="showView('checker'); document.getElementById('platform').value='X'">Check an X creative</button>
+    </section>
+
+    <section class="view" id="google">
+      <h1>Google & YouTube Ads</h1>
+      <p class="sub">Search + YouTube campaigns linked to the same CRM and conversion events.</p>
+      <div class="metrics">
+        <div class="metric"><div class="num">₹9,200</div><div class="lbl">Spend (7d)</div></div>
+        <div class="metric"><div class="num">64</div><div class="lbl">Leads</div></div>
+        <div class="metric"><div class="num">₹144</div><div class="lbl">CPL</div></div>
+        <div class="metric"><div class="num">₹92</div><div class="lbl">CPM</div></div>
+        <div class="metric"><div class="num">3.4%</div><div class="lbl">CTR</div></div>
+        <div class="metric"><div class="num">3.8×</div><div class="lbl">ROAS</div></div>
+        <div class="metric"><div class="num">2.9×</div><div class="lbl">ROI</div></div>
+      </div>
+      <div class="card">
+        <strong>Landing page analytics</strong>
+        <div style="margin-top:8px;font-size:0.9rem;color:var(--muted)">Sessions 890 · Bounce 36% · Avg time 2m 12s · Conversions 64 · YouTube views 2.4k</div>
+      </div>
+      <div class="card">
+        <strong>High-Intent Keywords Spotted</strong>
+        <div style="margin-top:10px;font-size:0.9rem;line-height:1.6">
+          “WhatsApp CRM India” · “AI sales agent for SMBs” · “automated lead follow up WhatsApp” · “best lead scoring tool India”<br><br>
+          <strong>Recommendation:</strong> Add these to your existing website. Similar pages have driven 14 sales in 48 hours for comparable offers.
+        </div>
+      </div>
+      <div class="card">
+        <div class="creative">
+          <img src="static/yt-thumb.webp" alt="YouTube" style="width:220px">
+          <div class="ad-meta">
+            <div><strong>YouTube In-Stream</strong></div>
+            <div>Target: Business decision makers</div>
+            <div>CTA: WhatsApp</div>
+            <div style="margin-top:8px">Status: Active · 2.4k views · 18 leads</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <strong>Google Search</strong>
+        <div style="margin-top:8px;font-size:0.9rem">Keywords: “WhatsApp CRM India”, “AI sales agent for SMBs”<br>Conversion tracking via CAPI + CRM events</div>
+      </div>
+      <button class="btn-secondary" style="margin-top:8px" onclick="showView('checker'); document.getElementById('platform').value='Google'">Check a Google / YouTube creative</button>
+    </section>
+
+    <section class="view" id="checker">
+      <h1>Creative Checker</h1>
+      <p class="sub">Demo only — rules are illustrative. Upload a static or reel to see platform-specific policy notes, estimated view range, and improvement suggestions.</p>
+      <div class="card">
+        <div style="margin-bottom:16px">
+          <strong>Platform</strong><br>
+          <select id="platform" style="margin-top:6px;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);width:220px">
+            <option>Meta</option>
+            <option>Google</option>
+            <option>X</option>
+            <option>YouTube</option>
+            <option>LinkedIn</option>
+          </select>
+        </div>
+        <div style="margin-bottom:16px">
+          <strong>Creative type</strong><br>
+          <select id="ctype" style="margin-top:6px;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);width:220px">
+            <option>Static image</option>
+            <option>Reel / short video</option>
+          </select>
+        </div>
+        <div id="dropzone" style="border:2px dashed var(--border);border-radius:12px;padding:32px;text-align:center;margin-bottom:16px;cursor:pointer;background:var(--surface-2)">
+          Drop image or video here, or click to select<br>
+          <span style="font-size:0.82rem;color:var(--muted)">Dummy upload — no file is actually sent or stored</span>
+          <input type="file" id="fileInput" accept="image/*,video/*" style="display:none">
+        </div>
+        <div style="margin-bottom:16px">
+          <strong>Context (optional)</strong><br>
+          <textarea id="context" placeholder="e.g. Founders in India, WhatsApp CTA, Hinglish, lead quality offer" rows="2" style="width:100%;margin-top:6px;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit"></textarea>
+        </div>
+        <button class="btn" onclick="runChecker()">Check Creative</button>
+      </div>
+      <div id="checkerResult" style="display:none"></div>
+    </section>
+
+    <section class="view" id="crm">
+      <h1>CRM</h1>
+      <p class="sub">All leads, outreach, meetings, and ad responses stored in one place. Export anytime.</p>
+      <div class="export-btns">
+        <button class="btn-secondary" onclick="exportCSV('leads')">Export Leads CSV</button>
+        <button class="btn-secondary" onclick="exportCSV('outreach')">Export Outreach CSV</button>
+        <button class="btn-secondary" onclick="alert('Excel export ready (demo)')">Export to Excel</button>
+      </div>
+      <div class="card">
+        <strong>Leads</strong>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Name</th><th>Company</th><th>ICP</th><th>Source</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Rahul Mehta</td><td>TechNova</td><td>High</td><td>Apollo + LinkedIn</td><td>Meeting Booked</td></tr>
+              <tr><td>Priya Sharma</td><td>GrowFast</td><td>High</td><td>LinkedIn</td><td>Replied</td></tr>
+              <tr><td>Ananya Reddy</td><td>Nexora</td><td>Medium</td><td>Reddit</td><td>Contacted</td></tr>
+              <tr><td>Vikram Joshi</td><td>CloudPath</td><td>High</td><td>Apollo</td><td>Contacted</td></tr>
+              <tr><td>Sneha Kapoor</td><td>Looply</td><td>High</td><td>Google Maps</td><td>Contacted</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <strong>Outreach</strong>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Lead</th><th>Channel</th><th>Subject / Type</th><th>Status</th><th>Date</th></tr></thead>
+            <tbody>
+              <tr><td>Rahul Mehta</td><td>Email</td><td>Quick thought on your sales process</td><td>Replied</td><td>2 days ago</td></tr>
+              <tr><td>Priya Sharma</td><td>Email + Voice</td><td>Saw your post about lead quality</td><td>Opened</td><td>1 day ago</td></tr>
+              <tr><td>Ananya Reddy</td><td>Email</td><td>Before you hire that first AE</td><td>Sent</td><td>Today</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <strong>Meetings & Ad Leads</strong>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Name</th><th>Source</th><th>Outcome</th><th>Next Step</th></tr></thead>
+            <tbody>
+              <tr><td>Rahul Mehta</td><td>Email</td><td>Meeting Booked</td><td>Thu 3:30 PM</td></tr>
+              <tr><td>WhatsApp Lead 1</td><td>Meta Ad</td><td>Qualified</td><td>In CRM</td></tr>
+              <tr><td>WhatsApp Lead 2</td><td>Meta Ad</td><td>Rejected</td><td>Filtered</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="workflows">
+      <h1>Workflows</h1>
+      <p class="sub">Each step can be configured by AI using just chat. No manual setup required.</p>
+      <div class="workflow-step">
+        <strong>1. ICP Definition</strong>
+        <div class="chat-config">“Focus on founders of 10-50 person SaaS companies in India who recently posted about hiring sales.”</div>
+        <div style="font-size:0.82rem;color:var(--muted);margin-top:6px">AI applied · ICP updated</div>
+      </div>
+      <div class="workflow-step">
+        <strong>2. Lead Sources</strong>
+        <div class="chat-config">“Prioritize Apollo and LinkedIn. Include Reddit only if intent is clear.”</div>
+        <div style="font-size:0.82rem;color:var(--muted);margin-top:6px">AI applied · Sources adjusted</div>
+      </div>
+      <div class="workflow-step">
+        <strong>3. Email Sequence</strong>
+        <div class="chat-config">“Make the first email shorter. Mention the specific pain from their LinkedIn comment.”</div>
+        <div style="font-size:0.82rem;color:var(--muted);margin-top:6px">AI applied · Sequence rewritten</div>
+      </div>
+      <div class="workflow-step">
+        <strong>4. Voice Notes</strong>
+        <div class="chat-config">“Add a 15-second voice note after the email for high-ICP leads.”</div>
+        <div style="font-size:0.82rem;color:var(--muted);margin-top:6px">AI applied · Voice step added</div>
+      </div>
+      <div class="workflow-step">
+        <strong>5. Ad Creative Rules</strong>
+        <div class="chat-config">“Only run creatives that have a clear hook, CTA, and auto-DM enabled.”</div>
+        <div style="font-size:0.82rem;color:var(--muted);margin-top:6px">AI applied · Creative filter active</div>
+      </div>
+      <button class="btn" style="margin-top:8px" onclick="alert('Chat with AI to reconfigure any step (demo)')">Configure via Chat</button>
+    </section>
+
+    <section class="view" id="insights">
+      <h1>Insights & Suggestions</h1>
+      <p class="sub">System analysis across creatives, SEO, and AEO.</p>
+      <div class="card">
+        <strong>Reel Performance</strong>
+        <div style="margin-top:8px;font-size:0.92rem">15-sec reel has 2.1x higher hold rate than static. Suggestion: Create 2 more variations with different opening hooks focused on “lead quality” pain.</div>
+      </div>
+      <div class="card">
+        <strong>SEO / AEO</strong>
+        <div style="margin-top:8px;font-size:0.92rem">Target queries “WhatsApp sales automation India” and “AI lead scoring for SMBs” have low competition. Recommend 3 short pages + FAQ schema.</div>
+      </div>
+      <div class="card">
+        <strong>Next Actions</strong>
+        <ul style="margin-top:8px;padding-left:18px;font-size:0.92rem;line-height:1.7">
+          <li>Scale winning reel creative by 30% budget</li>
+          <li>Add voice note variant to top-performing email sequence</li>
+          <li>Launch YouTube short version of the 15-sec reel</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+const avatars = ['static/avatar1.webp','static/avatar2.webp','static/avatar3.webp','static/avatar4.webp','static/avatar5.webp'];
+const leads = [
+  { name: "Rahul Mehta", role: "Founder, TechNova", loc: "Bangalore", icp: "High", do: "Runs a 40-person SaaS company. Struggles with lead quality.", email: "Rahul — saw TechNova just closed a round. Most teams at this stage still waste 30-40% of sales time on unqualified leads. We built a system that scores and routes only high-intent conversations to your team via WhatsApp + email. Worth 12 minutes this week?", linkedin: "Commented on a post about sales hiring: “Lead quality is our biggest bottleneck right now.”", reddit: "Mentioned in r/startups about tools that reduce manual follow-ups." },
+  { name: "Priya Sharma", role: "Head of Sales, GrowFast", loc: "Mumbai", icp: "High", do: "Managing a 12-person sales team. Looking for automation.", email: "Priya — your recent LinkedIn comment on lead quality was precise. Most tools claim personalization but still send the same sequence. We generate unique emails + voice notes per lead and push only warm replies to your CRM. Open to seeing how it works for a team your size?", linkedin: "Active commenter on sales automation posts. Recently asked about WhatsApp sequences.", reddit: null },
+  { name: "Ananya Reddy", role: "Co-founder, Nexora", loc: "Hyderabad", icp: "Medium", do: "Early-stage B2B tool. Hiring first sales hire.", email: "Ananya — before you hire that first AE, most early teams burn 2-3 months on bad leads. We help delay that hire by running structured outbound that only surfaces real conversations. Happy to show the exact flow we use with similar startups.", linkedin: "Posted about building first sales process.", reddit: "Asked in r/SaaS about tools for founder-led sales." },
+  { name: "Vikram Joshi", role: "Director, CloudPath", loc: "Pune", icp: "High", do: "IT services firm expanding into product.", email: "Vikram — moving from services to product usually breaks the old lead process. Your team is used to inbound RFPs. Product needs consistent outbound. We help services companies make that shift without adding headcount immediately.", linkedin: "Shared update about launching product arm.", reddit: null },
+  { name: "Sneha Kapoor", role: "Founder, Looply", loc: "Delhi", icp: "High", do: "D2C brand building B2B wholesale arm.", email: "Sneha — the wholesale side of Looply needs a different motion than D2C. Most brands try the same Instagram approach and get stuck. We run targeted sequences to distributors and retailers with proper follow-up. Worth a quick look?", linkedin: "Posted about expanding into B2B.", reddit: "Commented on retail wholesale challenges." },
+  { name: "Arjun Patel", role: "Sales Lead, FinEdge", loc: "Ahmedabad", icp: "Medium", do: "Fintech sales team of 8.", email: "Arjun — fintech sales cycles are long and most follow-ups die after day 3. We keep conversations alive across email + WhatsApp with personalized voice notes so deals don’t go cold. Open to seeing a sample sequence for fintech?", linkedin: null, reddit: "Active in fintech sales discussions." },
+  { name: "Meera Iyer", role: "CEO, BrightPath", loc: "Chennai", icp: "High", do: "Edtech company targeting schools.", email: "Meera — selling into schools has unique decision cycles and multiple stakeholders. Generic outreach rarely works. We have sequences built specifically for education buyers that surface the right person and keep the conversation moving. Happy to share examples.", linkedin: "Shared case study on school partnerships.", reddit: null },
+  { name: "Karan Singh", role: "Founder, Stackly", loc: "Jaipur", icp: "Medium", do: "Dev tools startup.", email: "Karan — developer audiences ignore generic emails. We personalize based on tech stack signals and recent GitHub or product activity so the message feels relevant. Most tools can’t do this cleanly. Worth 10 minutes?", linkedin: "Posts about developer experience.", reddit: "Active in r/programming and r/startups." },
+  { name: "Divya Nair", role: "Marketing Head, UrbanNest", loc: "Kochi", icp: "Medium", do: "Real estate tech.", email: "Divya — real estate leads often go cold within 48 hours. We help keep them warm across WhatsApp + email with timely, relevant follow-ups so your team only steps in when interest is real. Open to a short walkthrough?", linkedin: null, reddit: "Discussed lead response times in real estate." },
+  { name: "Rohit Malhotra", role: "Co-founder, Apex Labs", loc: "Gurgaon", icp: "High", do: "Hardware + software company.", email: "Rohit — hybrid hardware-software sales is messy. Top of funnel usually gets mixed with support tickets. We simplify it so your team only sees real product interest. Happy to show how other hybrid companies structured this.", linkedin: "Posted about product-market challenges.", reddit: null }
+];
+
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelector('.nav-item[data-view="' + id + '"]').classList.add('active');
+}
+
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => showView(item.dataset.view));
+});
+
+function toggleTheme() {
+  const html = document.documentElement;
+  html.dataset.theme = html.dataset.theme === 'dark' ? '' : 'dark';
+}
+
+function startDiscovery() {
+  showView('discover');
+  const steps = document.querySelectorAll('#steps .step');
+  const prog = document.getElementById('prog');
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i > 0) steps[i-1].classList.remove('active');
+    if (i > 0) steps[i-1].classList.add('done');
+    if (i < steps.length) {
+      steps[i].classList.add('active');
+      prog.style.width = ((i+1)/steps.length*100) + '%';
+      i++;
+    } else {
+      clearInterval(interval);
+      document.getElementById('toLeads').style.display = 'inline-block';
+    }
+  }, 1600);
+}
+
+function renderLeads() {
+  const grid = document.getElementById('leadsGrid');
+  grid.innerHTML = leads.map((l, i) => `
+    <div class="lead-card">
+      <div class="lead-header">
+        <img src="${avatars[i % avatars.length]}" class="avatar" alt="">
+        <div>
+          <div class="lead-name">${l.name}</div>
+          <div class="lead-role">${l.role}</div>
+        </div>
+      </div>
+      <div style="font-size:0.85rem;margin-bottom:8px">${l.loc} · ICP: <strong>${l.icp}</strong></div>
+      <div style="font-size:0.88rem;margin-bottom:8px">${l.do}</div>
+      <div><span class="tag">LinkedIn</span><span class="tag">Email</span><span class="tag">WhatsApp</span></div>
+      ${l.linkedin ? `<div style="font-size:0.82rem;margin-top:8px;color:var(--muted)"><strong>LinkedIn:</strong> ${l.linkedin}</div>` : ''}
+      ${l.reddit ? `<div style="font-size:0.82rem;margin-top:4px;color:var(--muted)"><strong>Reddit:</strong> ${l.reddit}</div>` : ''}
+      <div class="script-box"><strong>First email:</strong><br>${l.email}</div>
+    </div>
+  `).join('');
+}
+
+function exportCSV(type) {
+  let csv = '';
+  if (type === 'leads') {
+    csv = 'Name,Company,ICP,Source,Status\\nRahul Mehta,TechNova,High,Apollo + LinkedIn,Meeting Booked\\nPriya Sharma,GrowFast,High,LinkedIn,Replied\\nAnanya Reddy,Nexora,Medium,Reddit,Contacted';
+  } else {
+    csv = 'Lead,Channel,Subject,Status,Date\\nRahul Mehta,Email,Quick thought...,Replied,2 days ago\\nPriya Sharma,Email + Voice,Saw your post...,Opened,1 day ago';
+  }
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = type + '-export.csv';
+  a.click();
+}
+
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+if (dropzone) {
+  dropzone.addEventListener('click', () => fileInput.click());
+  dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.style.borderColor = 'var(--accent)'; });
+  dropzone.addEventListener('dragleave', () => dropzone.style.borderColor = 'var(--border)');
+  dropzone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropzone.style.borderColor = 'var(--border)';
+    if (e.dataTransfer.files[0]) fileInput.files = e.dataTransfer.files;
+    dropzone.innerHTML = 'File selected: ' + (fileInput.files[0]?.name || 'ready') + '<br><span style="font-size:0.82rem;color:var(--muted)">Dummy upload</span>';
+  });
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files[0]) dropzone.innerHTML = 'File selected: ' + fileInput.files[0].name + '<br><span style="font-size:0.82rem;color:var(--muted)">Dummy upload</span>';
+  });
+}
+
+function runChecker() {
+  const platform = document.getElementById('platform').value;
+  const type = document.getElementById('ctype').value;
+  const context = document.getElementById('context').value.trim() || 'No extra context given';
+  const isReel = type.includes('Reel');
+  const hasContext = context !== 'No extra context given';
+
+  const rules = {
+    Meta: {
+      views: isReel ? '18k–60k' : '10k–35k',
+      policy: isReel ? 'Hook must appear in first 3s. Text overlay under 20%. No restricted claims.' : 'Clear headline, high contrast, no excessive text. CTA must be explicit.',
+      tips: isReel
+        ? ['Open with a specific pain or question in the first 3 seconds', 'Keep total length under 15s for higher completion', 'End with a clear WhatsApp CTA']
+        : ['Keep headline under 7 words', 'Ensure text contrast meets platform guidelines', 'Add a short outcome line near the CTA']
+    },
+    Google: {
+      views: isReel ? '8k–25k' : '5k–18k',
+      policy: 'No misleading claims. Landing page must match ad promise. YouTube: no autoplay sound issues, clear branding.',
+      tips: ['Match headline language to high-intent search terms', 'Include a clear next step', 'Avoid superlatives that cannot be substantiated']
+    },
+    X: {
+      views: isReel ? '6k–22k' : '4k–15k',
+      policy: 'Conversational tone preferred. No spammy CTAs. Text must be readable at small size.',
+      tips: ['Write like a reply, not a banner', 'Keep text short enough to read without expanding', 'Use a soft CTA (reply or message)']
+    },
+    YouTube: {
+      views: isReel ? '15k–50k' : '—',
+      policy: 'In-stream: branding early, no misleading skip bait. End screen CTA clear.',
+      tips: ['Show product or outcome in first 5 seconds', 'Add captions', 'Make the CTA visible before the skip button becomes active']
+    },
+    LinkedIn: {
+      views: isReel ? '5k–18k' : '4k–12k',
+      policy: 'Professional tone. No hard-sell language. Claims must be factual.',
+      tips: ['Lead with a specific insight or number', 'Keep visual clean and text-light', 'CTA should feel like a conversation starter']
+    }
+  };
+
+  const r = rules[platform] || rules.Meta;
+  const contextNote = hasContext ? `Used context: “${context}”. Suggestions adjusted for this audience and offer.` : 'Add audience, offer or CTA language above for more specific suggestions.';
+  const compliant = Math.random() > 0.2;
+
+  const result = document.getElementById('checkerResult');
+  result.style.display = 'block';
+  result.innerHTML = `
+    <div class="card">
+      <div style="font-size:0.8rem;color:var(--muted);margin-bottom:6px">DEMO RESULT — illustrative only</div>
+      <strong>Result for ${platform} · ${type}</strong>
+      <div style="margin-top:12px;font-size:0.92rem">
+        <div><strong>Policy:</strong> <span style="color:${compliant ? 'var(--success)' : 'var(--accent)'}">${compliant ? 'Likely compliant' : 'Needs review'}</span></div>
+        <div style="margin-top:6px;font-size:0.85rem;color:var(--muted)">${r.policy}</div>
+        <div style="margin-top:8px"><strong>Estimated views (range):</strong> ${r.views} · based on creative type + platform norms</div>
+        <div style="margin-top:8px"><strong>Context:</strong> ${contextNote}</div>
+        <div style="margin-top:10px"><strong>To increase reach:</strong></div>
+        <ul style="margin:6px 0 0 18px;line-height:1.6">
+          ${r.tips.map(t => `<li>${t}</li>`).join('')}
+          <li>Test a second variation with a different opening line</li>
+        </ul>
+        ${!compliant ? `<div style="margin-top:10px;color:var(--accent)">Specific issue for ${platform}: ${isReel ? 'Hook timing or text density may reduce completion.' : 'Headline length or contrast may limit performance.'} Shorten or clarify before running.</div>` : ''}
+      </div>
+    </div>`;
+}
+
+renderLeads();
+</script>
+</body>
+</html>
